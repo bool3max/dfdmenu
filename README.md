@@ -1,10 +1,6 @@
 # dfdmenu
 
----
-
 **dfdmenu** is a simple fish script that generates cached `.desktop` entries for use with `dmenu`*(-wl)*.
-
----
 
 ## Usage
 
