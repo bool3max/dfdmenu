@@ -7,7 +7,10 @@ if test $argv[1] = 'generate-cache' 2>/dev/null
 
     set -eU dfdmenu_appnames ; set -eU dfdmenu_execstrings ; set -eU dfdmenu_dmenustring
     set -l index 1
-    for f in /usr/share/applications/*.desktop $HOME/.local/share/applications/*.desktop
+
+    set -l locations /usr/share/applications/*.desktop $HOME/.local/share/applications/*.desktop
+
+    for f in $locations
         set -l nodisplay (grep -Poi -m 1 '(?<=^NoDisplay=).+' $f)
         if test $nodisplay = 'true' 2>/dev/null
             # skip NoDisplay apps
