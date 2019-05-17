@@ -1,0 +1,46 @@
+#!/usr/bin/fish
+
+if test $argv[1] = 'generate-cache'
+    # generate a cache of 3 fish universal variables - the 1st one includes a list of all the .desktop app names (only the visible ones), while the 2nd one includes the corresponding Exec strings
+    # the 3rd one represents a string of all the names in the 1st variable, joined with a newline (later to be fed to dmenu-wl's stdin)
+    # fish's universal variables live in memory at runtime so this is significantly faster than polling the filesystem every time
+
+    set -eU dfdmenu_appnames ; set -eU dfdmenu_execstrings ; set -eU dfdmenu_dmenustring
+    set -l index 1
+    for f in /usr/share/applications/*.desktop $HOME/.local/share/applications/*.desktop
+        set -l nodisplay (grep -Poi -m 1 '(?<=^NoDisplay=).+' $f)
+        if test $nodisplay = 'true' 2>/dev/null
+            # skip NoDisplay apps
+            continue
+        end
+
+        set -l name (grep -Poi -m 1 '(?<=^Name=).+' $f)
+        set -l execstring (grep -Poi -m 1 '(?<=^Exec=).+' $f)
+
+        # remove % sequences from the Exec key -- we don't use them since we start apps via dmenu-wl
+        set -l execstring (string replace -ria '(%u)|(%U)|(%f)|(%F)|(%i)|(%c)|(%k)' '' $execstring)
+
+        set -U dfdmenu_appnames[$index] $name
+        set -U dfdmenu_execstrings[$index] $execstring
+
+        set -l index (math $index + 1)
+    end
+
+    for app in $dfdmenu_appnames
+        set -U dfdmenu_dmenustring "$dfdmenu_dmenustring$app\n"        
+    end
+
+    exit 0
+end
+
+set chosenapp (dmenu-wl -i -fn "Iosevka 10" -nb "#141414" -nf "#F8F8F0" -sb "#F8F8F0" -sf "#141414" -h 20 < (echo -en $dfdmenu_dmenustring | psub))
+set index 1
+for app in $dfdmenu_appnames
+    if test "$app" = "$chosenapp" 2>/dev/null
+        break
+    end
+
+    set index (math $index + 1)
+end
+
+exec sh -c $dfdmenu_execstrings[$index]
