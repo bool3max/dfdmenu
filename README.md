@@ -10,3 +10,11 @@
 The script also respects `.desktop`'s `NoDisplay` properties and doesn't cache nor display apps that match that criteria.
 
 If you are using `dmenu` instead of `dmenu-wl` just change the executable in the script. Their options are mutually exclusive.
+
+The script tracks and caches `.desktop` files in `/usr/share/applications` and `$HOME/.local/share/applications`. If you wish to track `.desktop` files in any other location, modify the script and append them to the `locations` variable.
+
+## Pacmam hook
+
+To use the provided `pacman` hook, replace `/path/to/dfdmenu` with an actual path to the `dfdmenu` script on your machine and place the hook file in a location in which pacman will recognize it (most likely `/etc/pacman.d/hooks`).
+
+This will result in the cache being (re)generated once any `pacman` operation modifies any .desktop file.
