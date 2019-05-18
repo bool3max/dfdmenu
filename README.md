@@ -5,7 +5,7 @@
 ## Usage
 
 1. `$ dfdmenu generate-cache` will create and populate 3 universal `fish` variables that act as cached pairs of `.desktop` entry Name's and Exec strings
-2. `$ dfdmenu` will spawn `dmenu-wl` with all the possible valid entries.
+2. `$ dfdmenu` will spawn `dmenu-wl` with all the possible valid entries. After an entry has been chosen, it's Exec parameter is fed to `sh -c` and it is executed.
 
 The script also respects `.desktop`'s `NoDisplay` properties and doesn't cache nor display apps that match that criteria.
 
