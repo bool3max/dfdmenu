@@ -1,6 +1,6 @@
 #!/usr/bin/fish
 
-if test $argv[1] = 'generate-cache' 2>/dev/null
+function generate_cache
     # generate a cache of 3 fish universal variables - the 1st one includes a list of all the .desktop app names (only the visible ones), while the 2nd one includes the corresponding Exec strings
     # the 3rd one represents a string of all the names in the 1st variable, joined with a newline (later to be fed to dmenu-wl's stdin)
     # fish's universal variables live in memory at runtime so this is significantly faster than polling the filesystem every time
@@ -32,9 +32,15 @@ if test $argv[1] = 'generate-cache' 2>/dev/null
     for app in $dfdmenu_appnames
         set -U dfdmenu_dmenustring "$dfdmenu_dmenustring$app\n"        
     end
+end
 
+if test $argv[1] = 'generate-cache' 2>/dev/null
+    generate_cache
     exit 0
 end
+
+# generate the cache if the script was called w/o arguments but hasn't built the cache beforehand
+not set -qU dfdmenu_dmenustring && generate_cache
 
 set chosenapp (dmenu-wl -i -fn "Iosevka 10" -nb "#141414" -nf "#F8F8F0" -sb "#F8F8F0" -sf "#141414" -h 20 < (echo -en $dfdmenu_dmenustring | psub))
 set index 1
