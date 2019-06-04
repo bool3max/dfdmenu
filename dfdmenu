@@ -1,4 +1,7 @@
 #!/usr/bin/fish
+#
+
+set -g dmenu_opts -i -fn "Iosevka 10" -nb "#141414" -nf "#F8F8F0" -sb "#F8F8F0" -sf "#131313" -h 20
 
 function generate_cache
     # generate a cache of 3 fish universal variables - the 1st one includes a list of all the .desktop app names (only the visible ones), while the 2nd one includes the corresponding Exec strings
@@ -42,7 +45,7 @@ end
 # generate the cache if the script was called w/o arguments but hasn't built the cache beforehand
 not set -qU dfdmenu_dmenustring && generate_cache
 
-set chosenapp (dmenu-wl -i -fn "Iosevka 10" -nb "#141414" -nf "#F8F8F0" -sb "#F8F8F0" -sf "#141414" -h 20 < (echo -en $dfdmenu_dmenustring | psub))
+set chosenapp (dmenu-wl $dmenu_opts < (echo -en $dfdmenu_dmenustring | psub))
 set index 1
 for app in $dfdmenu_appnames
     if test "$app" = "$chosenapp" 2>/dev/null

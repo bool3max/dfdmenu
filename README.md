@@ -9,7 +9,7 @@
 
 The script also respects `.desktop`'s `NoDisplay` properties and doesn't cache nor display apps that match that criteria.
 
-If you are using `dmenu` instead of `dmenu-wl` just change the executable in the script. Their options are mutually exclusive.
+The CLI arguments to pass to `dmenu(-wl)` are the ones in the global `$dmenu_opts` array.
 
 The script tracks and caches `.desktop` files in `/usr/share/applications` and `$HOME/.local/share/applications`. If you wish to track `.desktop` files in any other location, modify the script and append them to the `locations` variable.
 
